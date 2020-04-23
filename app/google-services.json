@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "676313781352",
+    "firebase_url": "https://prnappdialer.firebaseio.com",
+    "project_id": "prnappdialer",
+    "storage_bucket": "prnappdialer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676313781352:android:834e74963910f8fb0717dd",
+        "android_client_info": {
+          "package_name": "info.atiar.prnappdialer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676313781352-ntfvjecnsm8u4939hurpbrjavtla2css.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.atiar.prnappdialer",
+            "certificate_hash": "b102437c6f1f68fffd584f7b0bab5a4fa5afc5a7"
+          }
+        },
+        {
+          "client_id": "676313781352-otj3crand42e04sifedab0jltr0spg9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNUDN_Y3H_YcPMnhDflU5wg1DzjpjGa_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676313781352-otj3crand42e04sifedab0jltr0spg9s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
