@@ -106,12 +106,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:text="Username"
+                        android:text="Email"
                         android:textColor="@color/colorPurple"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/emailED"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -119,6 +120,7 @@
                         android:inputType="text" />
 
                     <TextView
+                        android:id="@+id/passwordTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
@@ -128,6 +130,7 @@
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/passwordED"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -148,12 +151,14 @@
                 android:elevation="10dp">
 
                 <Button
+                    android:id="@+id/loginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_ui"
                     android:text="Login"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite" />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -166,22 +171,25 @@
                 android:elevation="10dp">
 
                 <ImageButton
-                    android:id="@+id/btRegister"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/bg_ui"
+                    android:onClick="register"
                     android:src="@drawable/ic_add" />
+
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/tvForgot"
+                android:id="@+id/forgetPassTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cv"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:elevation="5dp"
+                android:tag="forgetPass"
                 android:text="Forgot your password?"
+                android:onClick="forgetPassword"
                 android:textSize="14sp" />
 
             <Button
@@ -200,7 +208,9 @@
                 android:visibility="gone"
                 android:text="LOGIN WITH FACEBOOK"
                 android:textColor="@color/colorPurple" />
+
         </RelativeLayout>
+
     </ScrollView>
 
 </RelativeLayout>
