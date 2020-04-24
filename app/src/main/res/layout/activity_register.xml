@@ -136,6 +136,7 @@
             </androidx.cardview.widget.CardView>
 
             <RelativeLayout
+                android:id="@+id/singup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cv"
@@ -147,13 +148,31 @@
                 android:elevation="10dp">
 
                 <Button
+                    android:id="@+id/signupButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_ui"
                     android:text="Sign up"
+                    android:onClick="signup"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite" />
+
             </RelativeLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back to Login"
+                android:textAllCaps="false"
+                android:onClick="backToLogin"
+                android:layout_below="@+id/singup"
+                android:layout_marginTop="15dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorBlack"
+                android:elevation="10dp"
+                android:gravity="center"/>
+
         </RelativeLayout>
     </ScrollView>
 
