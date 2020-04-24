@@ -51,6 +51,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/bgHeader"
         android:layout_margin="20dp">
+
         <RelativeLayout
             android:id="@+id/rlayout"
             android:layout_width="match_parent"
@@ -79,6 +80,7 @@
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/emailED"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -89,12 +91,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:text="Username"
+                        android:text="Full Name"
                         android:textColor="@color/colorPurple"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/fullNameED"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -111,6 +114,7 @@
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/passwordED"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -127,6 +131,7 @@
                         android:textStyle="bold" />
 
                     <EditText
+                        android:id="@+id/passwordED1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -159,7 +164,6 @@
 
             </RelativeLayout>
 
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,6 +178,7 @@
                 android:gravity="center"/>
 
         </RelativeLayout>
+
     </ScrollView>
 
 </RelativeLayout>
