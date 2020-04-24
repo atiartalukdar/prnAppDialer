@@ -156,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_ui"
                     android:text="Login"
+                    android:onClick="login"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite" />
 

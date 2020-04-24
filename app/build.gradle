@@ -43,4 +43,8 @@ dependencies {
     //Butterknife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    //Progress dialog
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+
 }
