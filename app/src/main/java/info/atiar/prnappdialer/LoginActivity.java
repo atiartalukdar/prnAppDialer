@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     KProgressHUD kProgressHUD;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
