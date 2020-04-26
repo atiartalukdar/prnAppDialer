@@ -12,7 +12,6 @@ public class UserModel {
         this.createdAt=createdAt;
     }
 
-
     public String getFullName() {
         return FullName;
     }

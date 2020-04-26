@@ -23,13 +23,16 @@
 
         </EditText>
 
-        <Button
+        <ImageButton
             android:id="@+id/addNumberButton"
             android:onClick="addNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:background="@drawable/ic_action_add"
+            android:layout_width="45dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="match_parent">
 
-        </Button>
+        </ImageButton>
     </LinearLayout>
 
     <LinearLayout
