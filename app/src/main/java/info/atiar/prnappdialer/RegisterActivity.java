@@ -17,19 +17,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import info.atiar.prnappdialer.model.UserModel;
 
 public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.emailED)         EditText _emailED;
     @BindView(R.id.fullNameED)      EditText _fullNameED;
     @BindView(R.id.passwordED)      EditText _passwordED;
     @BindView(R.id.passwordED1)     EditText _passwordED1;
-
 
 
     FirebaseAuth mAuth;
@@ -80,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
         }else if (!Password.equals(Password1)){
             Toast.makeText(RegisterActivity.this, "Pass didn't match. Check again", Toast.LENGTH_SHORT).show();
         }
-        mDialog.setMessage("Creating User please wait...");
+        mDialog.setMessage("Creating UserModel please wait...");
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
         mAuth.createUserWithEmailAndPassword(Email,Password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -122,12 +121,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createAnewUser(String uid) {
-        User user = BuildNewuser();
+        UserModel user = BuildNewuser();
         mdatabase.child(uid).setValue(user);
     }
 
-    private User BuildNewuser(){
-        return new User(
+    private UserModel BuildNewuser(){
+        return new UserModel(
                 getFullname(),
                 getUserEmail(),
                 new Date().getTime()

@@ -1,12 +1,12 @@
-package info.atiar.prnappdialer;
+package info.atiar.prnappdialer.model;
 
-public class User {
+public class UserModel {
     String FullName;
     String Email;
     long   createdAt;
 
-    public User (){};
-    public User(String FullName,String email,long createdAt){
+    public UserModel(){};
+    public UserModel(String FullName, String email, long createdAt){
         this.FullName=FullName;
         this.Email=email;
         this.createdAt=createdAt;

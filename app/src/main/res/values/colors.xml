@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorPurple">#983CFF</color>
+    <color name="colorPurpleLite">#D5C6EC</color>
     <color name="colorPurpleT">#64983cff</color>
     <color name="colorBlue">#2FB4FF</color>
     <color name="colorBlueT">#642fb4ff</color>
