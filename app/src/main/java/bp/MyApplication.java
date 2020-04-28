@@ -1,4 +1,4 @@
-package info.atiar.prnappdialer.bp;
+package bp;
 
 import android.app.Application;
 import android.content.Context;

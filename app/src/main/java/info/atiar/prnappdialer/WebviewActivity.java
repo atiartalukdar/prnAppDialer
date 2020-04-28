@@ -7,16 +7,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
-import java.util.Date;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -24,10 +22,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import info.atiar.prnappdialer.bp.BP;
-import info.atiar.prnappdialer.model.NumberStoringModel;
+import bp.BP;
+import model.NumberModel;
 
 public class WebviewActivity extends AppCompatActivity {
+    final String tag = getClass().getSimpleName() + "Atiar - ";
     @BindView(R.id.addNumberEd)         EditText _addNumberEd;
     @BindView(R.id.addNumberButton)     ImageButton _addNumberButton;
     @BindView(R.id.webview)             WebView _webview;
@@ -39,26 +38,31 @@ public class WebviewActivity extends AppCompatActivity {
     String MyUA = "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 5 Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.65 Mobile Safari/537.36";
     private ViewTreeObserver.OnScrollChangedListener mOnScrollChangedListener;
     Context mContext;
-    String userId;
+    String userId, websiteID, uniqueKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         ButterKnife.bind(this);
         mContext = this;
+        linkToOpen = getIntent().getStringExtra("website");
+        websiteID = getIntent().getStringExtra("websiteID");
+
+        Log.e(tag,linkToOpen);
         renderWebPage(linkToOpen);
 
         //Firebase stuff
         auth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("numbers");
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(auth.getUid()).child(websiteID);
         userId = auth.getUid();
 
     }
 
     public void addNumber(View view) {
-        if (!_addNumberEd.getText().equals("") || _addNumberEd.getText().equals(null)){
-            NumberStoringModel numberStoringModel = new NumberStoringModel(linkToOpen,_addNumberEd.getText().toString(), BP.getCurrentDateTime());
-            mDatabase.child(userId).child(BP.getCurrentDateTime()).setValue(numberStoringModel);
+        if (!((_addNumberEd.getText() == null) ||_addNumberEd.getText().toString().trim().equals(""))){
+            NumberModel numberModel = new NumberModel(websiteID,_addNumberEd.getText().toString(),userId, BP.getCurrentDateTime());
+            mDatabase.child(_addNumberEd.getText().toString()).setValue(numberModel);
+            _addNumberEd.setText("");
         }
     }
 

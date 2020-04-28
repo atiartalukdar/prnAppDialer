@@ -1,4 +1,4 @@
-package info.atiar.prnappdialer.model;
+package model;
 
 public class UserModel {
     String FullName;

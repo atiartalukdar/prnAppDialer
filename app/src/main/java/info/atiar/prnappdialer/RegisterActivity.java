@@ -22,7 +22,7 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import info.atiar.prnappdialer.model.UserModel;
+import model.UserModel;
 
 public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.emailED)         EditText _emailED;
