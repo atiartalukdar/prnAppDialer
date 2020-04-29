@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +43,7 @@ public class NumberDialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_number_dial);
         ButterKnife.bind(this);
         websiteID = getIntent().getStringExtra("websiteID");
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Firebase stuff
         auth = FirebaseAuth.getInstance();
         userId = auth.getUid();
@@ -76,6 +77,16 @@ public class NumberDialActivity extends AppCompatActivity {
                 Log.w(tag, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

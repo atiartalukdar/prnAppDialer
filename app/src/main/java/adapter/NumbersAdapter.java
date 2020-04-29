@@ -64,7 +64,7 @@ public class NumbersAdapter extends BaseAdapter {
 
 
         TextView _number = convertView.findViewById(R.id.numberTV);
-        _number.setText(numberModel.getNumber());
+        _number.setText("+"+numberModel.getNumber());
 
         _number.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +73,7 @@ public class NumbersAdapter extends BaseAdapter {
                         .withPermission(Manifest.permission.CALL_PHONE)
                         .withListener(new PermissionListener() {
                             @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-                                BP.callNumber(activity, numberModel.getNumber());
+                                BP.callNumber(activity, "+"+numberModel.getNumber());
 
                                 /* ... */}
                             @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
