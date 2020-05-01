@@ -5,10 +5,9 @@
 
 
     <item
-        android:id="@+id/menu_add_website"
-        android:icon="@drawable/ic_add"
-        android:title="Add"
+        android:id="@+id/menu_home"
+        android:icon="@drawable/ic_action_home"
+        android:title="Home"
         app:showAsAction="always" />
-
 
 </menu>
