@@ -16,7 +16,8 @@
         <activity android:name=".NumberDialActivity"></activity>
         <activity android:name=".WebviewActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:noHistory="true"/>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

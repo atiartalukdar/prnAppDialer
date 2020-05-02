@@ -108,7 +108,8 @@ public class WebviewActivity extends AppCompatActivity {
         if(_webview.canGoBack()) {
             _webview.goBack();
         } else {
-            super.onBackPressed();
+            startActivity(new Intent(WebviewActivity.this,MainActivity.class));
+            finish();
         }
     }
 

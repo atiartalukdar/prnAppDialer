@@ -64,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void visitWebsite(View view) {
-        startActivity(new Intent(MainActivity.this,WebviewActivity.class));
+        Intent intent = new Intent(MainActivity.this,WebviewActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 
     public void allNumbersButton(View view) {
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         finish();
     }
 
@@ -156,4 +159,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
