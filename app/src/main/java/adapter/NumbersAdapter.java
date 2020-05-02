@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bp.BP;
+import info.atiar.prnappdialer.NumberDialActivity;
 import info.atiar.prnappdialer.R;
 import model.NumberModel;
 
@@ -64,8 +66,15 @@ public class NumbersAdapter extends BaseAdapter {
 
 
         TextView _number = convertView.findViewById(R.id.numberTV);
-        _number.setText("+"+numberModel.getNumber());
+        ImageView _deleteButton = convertView.findViewById(R.id.deleteButton);
+        _number.setText(numberModel.getNumber());
 
+        _deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((NumberDialActivity) activity).removeItem(position);
+            }
+        });
         _number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +82,7 @@ public class NumbersAdapter extends BaseAdapter {
                         .withPermission(Manifest.permission.CALL_PHONE)
                         .withListener(new PermissionListener() {
                             @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-                                BP.callNumber(activity, "+"+numberModel.getNumber());
+                                BP.callNumber(activity, numberModel.getNumber());
 
                                 /* ... */}
                             @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}

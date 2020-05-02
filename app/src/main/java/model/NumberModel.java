@@ -21,7 +21,12 @@ public class NumberModel {
     }
 
     public String getNumber() {
-        return number;
+        Character charAt = number.charAt(0);
+        if (charAt.toString().equals("+")){
+            return number;
+        }else {
+            return "+"+number;
+        }
     }
 
     public String getCreatedBy() {
