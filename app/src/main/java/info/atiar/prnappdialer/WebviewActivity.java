@@ -81,6 +81,8 @@ public class WebviewActivity extends AppCompatActivity {
         _webview.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         _webview.getSettings().setLoadsImagesAutomatically(true);
         _webview.getSettings().setAppCacheEnabled(true);
+        _webview.getSettings().setSupportZoom(true);
+        _webview.getSettings().setBuiltInZoomControls(true);
         _webview.getSettings().setAppCachePath(getApplication().getCacheDir().toString());
         _webview.setWebViewClient(new WebViewClient(){
 
