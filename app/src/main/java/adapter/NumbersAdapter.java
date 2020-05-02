@@ -75,6 +75,7 @@ public class NumbersAdapter extends BaseAdapter {
                 ((NumberDialActivity) activity).removeItem(position);
             }
         });
+
         _number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
