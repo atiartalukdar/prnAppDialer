@@ -84,9 +84,9 @@ public class NumbersAdapter extends BaseAdapter {
                         .withListener(new PermissionListener() {
                             @Override public void onPermissionGranted(PermissionGrantedResponse response) {
                                 BP.callNumber(activity, numberModel.getNumber());
-
-                                /* ... */}
-                            @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+                                BP.isSingleNumber = true;
+                            }
+                            @Override public void onPermissionDenied(PermissionDeniedResponse response) {}
                             @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
                         }).check();
             }

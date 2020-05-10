@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.MANAGE_OWN_CALLS"/>
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+
+
     <application
         android:name="bp.MyApplication"
         android:allowBackup="true"
@@ -31,8 +33,9 @@
 
         <receiver android:name="bp.PhoneStateBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE">
-                </action></intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
+            </intent-filter>
         </receiver>
     </application>
 

@@ -4,10 +4,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,7 +31,9 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import adapter.NumbersAdapter;
 import bp.BP;
@@ -39,11 +45,12 @@ import model.WebsitesModel;
 public class NumberDialActivity extends AppCompatActivity {
     final String tag = getClass().getSimpleName() + "Atiar - ";
 
-    @BindView(R.id.numberListView)    ListView _numberListView;
+    @BindView(R.id.numberListView)
+    ListView _numberListView;
 
     private DatabaseReference mDatabase;
     private FirebaseAuth auth;
-    String userId,websiteID;
+    String userId, websiteID;
 
     NumbersAdapter numbersAdapter;
     private List<NumberModel> numberList = new ArrayList<>();
@@ -69,23 +76,31 @@ public class NumberDialActivity extends AppCompatActivity {
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.READ_PHONE_STATE)
                 .withListener(new PermissionListener() {
-                    @Override public void onPermissionGranted(PermissionGrantedResponse response) {
-                        /* ... */}
-                    @Override public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
-                    @Override public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        /* ... */
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
                 }).check();
 
     }
 
-    private void numbersFromDB(){
+    private void numbersFromDB() {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 numberList.clear();
+                BP.queue.clear();
 
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     NumberModel numberModel = dataSnapshot1.getValue(NumberModel.class);
                     numberList.add(numberModel);
+                    BP.queue.add(numberModel.getNumber());
                 }
                 numbersAdapter.notifyDataSetChanged();
 
@@ -100,16 +115,30 @@ public class NumberDialActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.call, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
+            case R.id.menu_call_all:
+                callAllTheNumbers();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void removeItem(int position){
+    private void callAllTheNumbers() {
+        BP.isSingleNumber  = false;
+        BP.callNumberFromNumberDialActivity(NumberDialActivity.this);
+    }
+
+    public void removeItem(int position) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -123,7 +152,7 @@ public class NumberDialActivity extends AppCompatActivity {
                         applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                                for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
                                     appleSnapshot.getRef().removeValue();
                                 }
                             }
@@ -132,13 +161,14 @@ public class NumberDialActivity extends AppCompatActivity {
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.e(tag, "onCancelled", databaseError.toException());
                             }
-                        });                    }
+                        });
+                    }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //set what should happen when negative button is clicked
-                        Toast.makeText(getApplicationContext(),"Nothing Happened",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Nothing Happened", Toast.LENGTH_LONG).show();
                     }
                 })
                 .show();
@@ -147,7 +177,7 @@ public class NumberDialActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(NumberDialActivity.this,MainActivity.class));
+        startActivity(new Intent(NumberDialActivity.this, MainActivity.class));
         finish();
     }
 }

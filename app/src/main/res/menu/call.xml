@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:appcompat="http://schemas.android.com/tools">
+
+
+    <item
+        android:id="@+id/menu_call_all"
+        android:icon="@drawable/ic_action_call_all"
+        android:title="call"
+        app:showAsAction="always" />
+
+
+</menu>
