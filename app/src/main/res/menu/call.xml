@@ -4,11 +4,18 @@
     xmlns:appcompat="http://schemas.android.com/tools">
 
 
+
+    <item
+        android:id="@+id/menu_delete_all"
+        android:icon="@drawable/ic_action_deletel_all"
+        android:title="Delete All"
+        app:showAsAction="always" />
     <item
         android:id="@+id/menu_call_all"
         android:icon="@drawable/ic_action_call_all"
         android:title="call"
         app:showAsAction="always" />
+
 
 
 </menu>

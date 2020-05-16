@@ -129,8 +129,44 @@ public class NumberDialActivity extends AppCompatActivity {
             case R.id.menu_call_all:
                 callAllTheNumbers();
                 break;
+            case R.id.menu_delete_all:
+                deleteAllNumbers();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAllNumbers() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Are you sure to Delete All the numbers?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //set what would happen when positive button is clicked
+
+                        mDatabase.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                dataSnapshot.getRef().removeValue();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                Log.w(tag, "Failed to read value.", error.toException());
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //set what should happen when negative button is clicked
+                        Toast.makeText(getApplicationContext(), "Nothing Happened", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .show();
     }
 
     private void callAllTheNumbers() {
