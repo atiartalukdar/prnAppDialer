@@ -69,9 +69,7 @@ public class NumberDialActivity extends AppCompatActivity {
 
         numbersAdapter = new NumbersAdapter(this, numberList);
         _numberListView.setAdapter(numbersAdapter);
-
         numbersFromDB();
-
 
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.READ_PHONE_STATE)
