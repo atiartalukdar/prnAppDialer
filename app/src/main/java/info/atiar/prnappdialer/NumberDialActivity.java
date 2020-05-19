@@ -8,7 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -24,13 +26,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -43,17 +48,23 @@ import model.NumberModel;
 import model.WebsitesModel;
 
 public class NumberDialActivity extends AppCompatActivity {
-    final String tag = getClass().getSimpleName() + "Atiar - ";
-
+    private final String TAG = getClass().getSimpleName() + "Atiar - ";
+    public static Context context;
     @BindView(R.id.numberListView)
     ListView _numberListView;
 
-    private DatabaseReference mDatabase;
+    private static DatabaseReference mDatabase;
     private FirebaseAuth auth;
-    String userId, websiteID;
+    public static String userId, websiteID;
 
     NumbersAdapter numbersAdapter;
     private List<NumberModel> numberList = new ArrayList<>();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        context  = NumberDialActivity.this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,19 +83,31 @@ public class NumberDialActivity extends AppCompatActivity {
         numbersFromDB();
 
         Dexter.withActivity(this)
-                .withPermission(Manifest.permission.READ_PHONE_STATE)
-                .withListener(new PermissionListener() {
+                .withPermissions(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_CALL_LOG,
+                        Manifest.permission.WRITE_CALL_LOG)
+                .withListener(new MultiplePermissionsListener() {
                     @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        /* ... */
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            // do you work now
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            // permission is denied permenantly, navigate user to app settings
+                        }
                     }
 
                     @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
-                }).check();
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .onSameThread()
+                .check();
 
     }
 
@@ -93,21 +116,24 @@ public class NumberDialActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 numberList.clear();
-                BP.queue.clear();
+                if (!BP.isCallRunning){
+                    BP.queue.clear();
+                }
 
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     NumberModel numberModel = dataSnapshot1.getValue(NumberModel.class);
                     numberList.add(numberModel);
-                    BP.queue.add(numberModel.getNumber());
+                    if (!BP.isCallRunning){
+                        BP.queue.add(numberModel.getNumber());
+                    }
                 }
                 numbersAdapter.notifyDataSetChanged();
-
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w(tag, "Failed to read value.", error.toException());
+                Log.e(TAG, "Failed to read value.", error.toException());
             }
         });
     }
@@ -152,7 +178,7 @@ public class NumberDialActivity extends AppCompatActivity {
                             @Override
                             public void onCancelled(DatabaseError error) {
                                 // Failed to read value
-                                Log.w(tag, "Failed to read value.", error.toException());
+                                Log.e(TAG, "Failed to read value.", error.toException());
                             }
                         });
                     }
@@ -169,6 +195,7 @@ public class NumberDialActivity extends AppCompatActivity {
 
     private void callAllTheNumbers() {
         BP.isSingleNumber  = false;
+        BP.isCallRunning = true;
         BP.callNumberFromNumberDialActivity(NumberDialActivity.this);
     }
 
@@ -193,7 +220,7 @@ public class NumberDialActivity extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.e(tag, "onCancelled", databaseError.toException());
+                                Log.e(TAG, "onCancelled", databaseError.toException());
                             }
                         });
                     }
@@ -213,5 +240,9 @@ public class NumberDialActivity extends AppCompatActivity {
     public void onBackPressed() {
         startActivity(new Intent(NumberDialActivity.this, MainActivity.class));
         finish();
+    }
+
+    public static void updatePhoneNumberStatus(NumberModel numberModel){
+        mDatabase.child(numberModel.getNumber()).setValue(numberModel);
     }
 }

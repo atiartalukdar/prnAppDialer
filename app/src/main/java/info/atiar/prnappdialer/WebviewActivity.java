@@ -64,7 +64,7 @@ public class WebviewActivity extends AppCompatActivity {
 
     public void addNumber(View view) {
         if (!((_addNumberEd.getText() == null) ||_addNumberEd.getText().toString().trim().equals(""))){
-            NumberModel numberModel = new NumberModel(websiteID,_addNumberEd.getText().toString(),userId, BP.getCurrentDateTime());
+            NumberModel numberModel = new NumberModel(websiteID,_addNumberEd.getText().toString(),"0",userId, BP.getCurrentDateTime());
             mDatabase.child(_addNumberEd.getText().toString()).setValue(numberModel);
             _addNumberEd.setText("");
         }

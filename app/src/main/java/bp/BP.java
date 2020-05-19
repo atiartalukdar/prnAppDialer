@@ -27,6 +27,8 @@ public class BP {
     public static Activity numberDialActivity;
     public static Queue<String> queue = new LinkedList<>();
     public static boolean isSingleNumber = false;
+    public static boolean isCallFromApp = false;
+    public static boolean isCallRunning = false;
 
     public static String getCurrentDateTime(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -34,17 +36,10 @@ public class BP {
         return currentDateandTime;
     }
 
-    public static void openDialPad(Activity activity, String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        activity.startActivity(intent);
-    }
-
     public static void callNumber(Activity activity, String phoneNumber) {
+        isCallFromApp = true;
         numberDialActivity = activity;
-
         Intent intent = new Intent(Intent.ACTION_CALL);
-
         intent.setData(Uri.parse("tel:" + phoneNumber));
         activity.startActivity(intent);
     }

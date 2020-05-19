@@ -65,6 +65,10 @@ dependencies {
     //shimmer library to show loading animation
     implementation "com.facebook.shimmer:shimmer:${var}"
 
-
+/*
+    //to read data from .xlsx file
+    implementation "org.apache.poi:poi:4.1.2"
+    implementation "org.apache.poi:poi-ooxml:4.1.2"
+*/
 
 }

@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -65,9 +67,14 @@ public class NumbersAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.number_list, null);
 
 
+        CardView _cardView = convertView.findViewById(R.id.cardView);
         TextView _number = convertView.findViewById(R.id.numberTV);
         ImageView _deleteButton = convertView.findViewById(R.id.deleteButton);
         _number.setText(numberModel.getNumber());
+
+        if (!numberModel.getCallDuration().equals("0")){
+            _cardView.setCardBackgroundColor(context.getResources().getColor(R.color.colorGreenLite));
+        }
 
         _deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
