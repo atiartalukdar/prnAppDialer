@@ -153,11 +153,18 @@ public class NumberDialActivity extends AppCompatActivity {
             case R.id.menu_call_all:
                 callAllTheNumbers();
                 break;
+            case R.id.menu_sms:
+                smsAllTheNumbers();
+                break;
             case R.id.menu_delete_all:
                 deleteAllNumbers();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void smsAllTheNumbers() {
+
     }
 
     private void deleteAllNumbers() {

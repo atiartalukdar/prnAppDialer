@@ -40,7 +40,7 @@
                 android:id="@+id/allNumbersButton"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:text="All numbers"
+                android:text="All Numbers"
                 android:drawableLeft="@drawable/ic_action_name"
                 android:alpha=".7"
                 android:textColor="@color/colorBlack"
