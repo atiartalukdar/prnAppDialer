@@ -12,10 +12,16 @@ public class NumberModel {
 
     public NumberModel(String websiteID, String number, String callDuration, String createdBy, String createdAt) {
         this.websiteID = websiteID;
-        this.number = number;
         this.callDuration = callDuration;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
+
+        Character charAt = number.charAt(0);
+        if (charAt.toString().equals("+")){
+            this.number = number;
+        }else {
+            this.number = "+"+number;
+        }
     }
 
     public String getWebsiteID() {
@@ -27,12 +33,21 @@ public class NumberModel {
     }
 
     public String getNumber() {
-        return number;
+        Character charAt = number.charAt(0);
+        if (charAt.toString().equals("+")){
+            return number;
+        }else {
+            return "+"+number;
+        }
     }
 
     public void setNumber(String number) {
-        this.number = number;
-    }
+        Character charAt = number.charAt(0);
+        if (charAt.toString().equals("+")){
+            this.number = number;
+        }else {
+            this.number = "+"+number;
+        }    }
 
     public String getCallDuration() {
         return callDuration;

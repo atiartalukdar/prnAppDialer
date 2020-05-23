@@ -4,13 +4,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -47,6 +51,8 @@ import butterknife.ButterKnife;
 import model.NumberModel;
 import model.WebsitesModel;
 
+// https://stackoverflow.com/questions/30521487/how-to-get-the-callers-number
+
 public class NumberDialActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName() + "Atiar - ";
     public static Context context;
@@ -76,6 +82,7 @@ public class NumberDialActivity extends AppCompatActivity {
         //Firebase stuff
         auth = FirebaseAuth.getInstance();
         userId = auth.getUid();
+        //mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
         mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
 
         numbersAdapter = new NumbersAdapter(this, numberList);
@@ -86,6 +93,8 @@ public class NumberDialActivity extends AppCompatActivity {
                 .withPermissions(
                         Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.READ_CALL_LOG,
+                        Manifest.permission.SEND_SMS,
+                        Manifest.permission.READ_SMS,
                         Manifest.permission.WRITE_CALL_LOG)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
@@ -112,6 +121,7 @@ public class NumberDialActivity extends AppCompatActivity {
     }
 
     private void numbersFromDB() {
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -163,8 +173,15 @@ public class NumberDialActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private int mMessageSentParts;
+    private int mMessageSentTotalParts;
+    private int mMessageSentCount;
+    String message = "test message";
     private void smsAllTheNumbers() {
+        registerBroadCastReceivers();
 
+        mMessageSentCount = 0;
+        sendSMS(numberList.get(mMessageSentCount).getNumber(), message);
     }
 
     private void deleteAllNumbers() {
@@ -175,19 +192,8 @@ public class NumberDialActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //set what would happen when positive button is clicked
-
-                        mDatabase.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                dataSnapshot.getRef().removeValue();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-                                // Failed to read value
-                                Log.e(TAG, "Failed to read value.", error.toException());
-                            }
-                        });
+                        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
+                        mDatabase.removeValue();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -207,7 +213,7 @@ public class NumberDialActivity extends AppCompatActivity {
     }
 
     public void removeItem(int position) {
-
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Are you sure to Delete this number?")
@@ -221,8 +227,11 @@ public class NumberDialActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                                    appleSnapshot.getRef().removeValue();
+                                    if (appleSnapshot != null){
+                                        appleSnapshot.getRef().removeValue();
+                                    }
                                 }
+                                numbersAdapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -230,6 +239,8 @@ public class NumberDialActivity extends AppCompatActivity {
                                 Log.e(TAG, "onCancelled", databaseError.toException());
                             }
                         });
+
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -250,6 +261,103 @@ public class NumberDialActivity extends AppCompatActivity {
     }
 
     public static void updatePhoneNumberStatus(NumberModel numberModel){
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
         mDatabase.child(numberModel.getNumber()).setValue(numberModel);
+    }
+
+    private void sendNextMessage(){
+        if(thereAreSmsToSend()){
+            sendSMS(numberList.get(mMessageSentCount).getNumber(), message);
+        }else{
+            Toast.makeText(getBaseContext(), "All SMS have been sent",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean thereAreSmsToSend(){
+        return mMessageSentCount < numberList.size();
+    }
+
+    private void sendSMS(final String phoneNumber, String message) {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        SmsManager sms = SmsManager.getDefault();
+        ArrayList<String> parts = sms.divideMessage(message);
+        mMessageSentTotalParts = parts.size();
+
+        Log.i("Message Count", "Message Count: " + mMessageSentTotalParts);
+
+        ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
+
+        for (int j = 0; j < mMessageSentTotalParts; j++) {
+            sentIntents.add(sentPI);
+            deliveryIntents.add(deliveredPI);
+        }
+
+        mMessageSentParts = 0;
+        sms.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, deliveryIntents);
+    }
+
+    private void registerBroadCastReceivers(){
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+
+                        mMessageSentParts++;
+                        if ( mMessageSentParts == mMessageSentTotalParts ) {
+                            mMessageSentCount++;
+                            sendNextMessage();
+                        }
+
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_SENT"));
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+
+                    case Activity.RESULT_OK:
+                        final String outgoingCallNumber = arg1.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+                        Log.e(TAG, outgoingCallNumber+"");
+                        Toast.makeText(getBaseContext(), "SMS delivered to = "+outgoingCallNumber,
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS not delivered ",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_DELIVERED"));
+
     }
 }

@@ -57,15 +57,24 @@ public class WebviewActivity extends AppCompatActivity {
 
         //Firebase stuff
         auth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(auth.getUid()).child(websiteID);
         userId = auth.getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
 
     }
 
     public void addNumber(View view) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("allnumbers").child(userId).child(websiteID);
+
         if (!((_addNumberEd.getText() == null) ||_addNumberEd.getText().toString().trim().equals(""))){
-            NumberModel numberModel = new NumberModel(websiteID,_addNumberEd.getText().toString(),"0",userId, BP.getCurrentDateTime());
-            mDatabase.child(_addNumberEd.getText().toString()).setValue(numberModel);
+            String number = "";
+            Character charAt = _addNumberEd.getText().toString().trim().charAt(0);
+            if (charAt.toString().equals("+")){
+                number = _addNumberEd.getText().toString().trim();
+            }else {
+                number = "+" + _addNumberEd.getText().toString().trim();
+            }
+            NumberModel numberModel = new NumberModel(websiteID,number,"0",userId, BP.getCurrentDateTime());
+            mDatabase.child(number).setValue(numberModel);
             _addNumberEd.setText("");
         }
     }
