@@ -251,6 +251,8 @@ public class NumberDialActivity extends AppCompatActivity {
                             }
                         });
 
+                        _numberListView.invalidateViews();
+
 
                     }
                 })

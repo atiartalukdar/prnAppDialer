@@ -77,12 +77,15 @@ public class NumbersAdapter extends BaseAdapter {
 
         if (!numberModel.getCallDuration().equals("0")){
             _item_call.setBackgroundColor(Color.GREEN);
+        }else {
+            _item_call.setBackgroundColor(Color.TRANSPARENT);
         }
 
         _deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((NumberDialActivity) activity).removeItem(position);
+                notifyDataSetChanged();
             }
         });
 
