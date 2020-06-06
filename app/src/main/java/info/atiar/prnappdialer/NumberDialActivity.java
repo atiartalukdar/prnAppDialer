@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -58,6 +59,7 @@ public class NumberDialActivity extends AppCompatActivity {
     public static Context context;
     @BindView(R.id.numberListView)
     ListView _numberListView;
+    KProgressHUD kProgressHUD;
 
     private static DatabaseReference mDatabase;
     private FirebaseAuth auth;
@@ -178,6 +180,15 @@ public class NumberDialActivity extends AppCompatActivity {
     private int mMessageSentCount;
     String message = "test message";
     private void smsAllTheNumbers() {
+        kProgressHUD.create(NumberDialActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setDetailsLabel("Sending SMS")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f)
+                .show();
+
         registerBroadCastReceivers();
 
         mMessageSentCount = 0;
@@ -269,6 +280,7 @@ public class NumberDialActivity extends AppCompatActivity {
         if(thereAreSmsToSend()){
             sendSMS(numberList.get(mMessageSentCount).getNumber(), message);
         }else{
+            kProgressHUD.dismiss();
             Toast.makeText(getBaseContext(), "All SMS have been sent",
                     Toast.LENGTH_SHORT).show();
         }
@@ -278,9 +290,10 @@ public class NumberDialActivity extends AppCompatActivity {
         return mMessageSentCount < numberList.size();
     }
 
+    String SENT = "SMS_SENT";
+
+    String DELIVERED = "SMS_DELIVERED";
     private void sendSMS(final String phoneNumber, String message) {
-        String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
 
         SmsManager sms = SmsManager.getDefault();
         ArrayList<String> parts = sms.divideMessage(message);
@@ -304,7 +317,6 @@ public class NumberDialActivity extends AppCompatActivity {
     }
 
     private void registerBroadCastReceivers(){
-
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
@@ -338,7 +350,7 @@ public class NumberDialActivity extends AppCompatActivity {
                         break;
                 }
             }
-        }, new IntentFilter("SMS_SENT"));
+        }, new IntentFilter(SENT));
 
         registerReceiver(new BroadcastReceiver() {
             @Override
@@ -346,18 +358,17 @@ public class NumberDialActivity extends AppCompatActivity {
                 switch (getResultCode()) {
 
                     case Activity.RESULT_OK:
-                        final String outgoingCallNumber = arg1.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                        Log.e(TAG, outgoingCallNumber+"");
-                        Toast.makeText(getBaseContext(), "SMS delivered to = "+outgoingCallNumber,
+                        Toast.makeText(getBaseContext(), "SMS delivered",
                                 Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "SMS delivered");
                         break;
                     case Activity.RESULT_CANCELED:
-                        Toast.makeText(getBaseContext(), "SMS not delivered ",
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
                                 Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
-        }, new IntentFilter("SMS_DELIVERED"));
+        }, new IntentFilter(DELIVERED));
 
     }
 }
