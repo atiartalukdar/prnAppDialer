@@ -3,6 +3,7 @@ package adapter;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,12 +69,14 @@ public class NumbersAdapter extends BaseAdapter {
 
 
         CardView _cardView = convertView.findViewById(R.id.cardView);
+        ImageView _item_call = convertView.findViewById(R.id.item_call);
+        ImageView _item_sms = convertView.findViewById(R.id.item_sms);
         TextView _number = convertView.findViewById(R.id.numberTV);
         ImageView _deleteButton = convertView.findViewById(R.id.deleteButton);
         _number.setText(numberModel.getNumber());
 
         if (!numberModel.getCallDuration().equals("0")){
-            _cardView.setCardBackgroundColor(context.getResources().getColor(R.color.colorGreenLite));
+            _item_call.setBackgroundColor(Color.GREEN);
         }
 
         _deleteButton.setOnClickListener(new View.OnClickListener() {
